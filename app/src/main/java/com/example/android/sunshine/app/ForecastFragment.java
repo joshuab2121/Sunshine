@@ -4,10 +4,13 @@ package com.example.android.sunshine.app;
  * Class that handles network calls to Open Weather Map API in a background thread.
  */
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -65,13 +68,30 @@ public class ForecastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
+
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("92694,us");
+
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateWeather() {
+        String postalCode = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getString(getString(R.string.pref_location_key),
+                        getString(R.string.pref_location_default));
+
+        Log.d("JDB", postalCode);
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        weatherTask.execute(postalCode + ",us");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
@@ -79,32 +99,6 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        // An example using an ArrayList.  Add data with the add() method.
-
-        /*
-        ArrayList<String> forecastArray = new ArrayList<>();
-        forecastArray.add("Today - Sunny - 88/63");
-        forecastArray.add("Tomorrow - Foggy - 70/40");
-        forecastArray.add("Weds - Cloudy - 72/63");
-        forecastArray.add("Thurs - Asteroids - 75/65");
-        forecastArray.add("Fri - Heavy Rain - 65/56");
-        forecastArray.add("Sat - HELP TRAPPED IN WEATHER STATION - 60/51");
-        forecastArray.add("Sun - Sunny - 80/68");
-*/
-
-        // You could also define a string array...
-        String[] data = {
-                "Today - Sunny - 88/63",
-                "Tomorrow - Foggy - 70/40",
-                "Weds - Cloudy - 72/63",
-                "Thurs - Asteroids - 75/65",
-                "Fri - Heavy Rain - 65/56",
-                "Sat - HELP TRAPPED IN WEATHER STATION - 60/51",
-                "Sun - Sunny - 80/68"
-        };
-        // And then convert it into an ArrayList
-        List<String> weekForecast = new ArrayList<>(Arrays.asList(data));
 
         // The ArrayAdapter will take data from a source and
         // use it to populate the ListView it's attached to.
@@ -112,11 +106,13 @@ public class ForecastFragment extends Fragment {
                 getActivity(), // The current context (this activity)
                 R.layout.list_item_forecast, // The name of the layout ID.
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                weekForecast); // Array or ArrayList of Strings to represent the ListView.
+               new ArrayList<String>()); // Array or ArrayList of Strings to represent the ListView.
 
         //Get a reference to the ListView and attach this adapter to it
         ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
+
         listView.setAdapter(forecastAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -172,6 +168,7 @@ public class ForecastFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
+                Log.d(LOG_TAG, builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -188,7 +185,7 @@ public class ForecastFragment extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
-                while ((line = reader.readLine()) != null) {                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                while ((line = reader.readLine()) != null) {// Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                     // But it does make debugging a *lot* easier if you print out the completed
                     // buffer for debugging.
                     buffer.append(line).append("\n");
