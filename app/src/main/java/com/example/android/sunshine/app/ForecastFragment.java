@@ -4,7 +4,7 @@ package com.example.android.sunshine.app;
  * Class that handles network calls to Open Weather Map API in a background thread.
  */
 
-import android.annotation.TargetApi;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -78,7 +79,6 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
         // Create some dummy data for the ListView.  Here's a sample weekly forecast
         // An example using an ArrayList.  Add data with the add() method.
 
@@ -117,6 +117,17 @@ public class ForecastFragment extends Fragment {
         //Get a reference to the ListView and attach this adapter to it
         ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
         listView.setAdapter(forecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String forecast = forecastAdapter.getItem(position);
+                // Toast.makeText(getActivity(), forecast, Toast.LENGTH_LONG).show();
+
+                Intent launchDetail = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(launchDetail);
+            }
+        });
 
         return rootView;
     }
@@ -177,8 +188,7 @@ public class ForecastFragment extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                while ((line = reader.readLine()) != null) {                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                     // But it does make debugging a *lot* easier if you print out the completed
                     // buffer for debugging.
                     buffer.append(line).append("\n");
@@ -215,21 +225,22 @@ public class ForecastFragment extends Fragment {
             }
             return null;
         }
-        
+
         @Override
         protected void onPostExecute(String[] result) {
             forecastAdapter.clear();
-
-
+            // You can use a for each loop to add data one at a time
             /*
             for (String string: result) {
                 forecastAdapter.add(string);
             }
             */
 
-            // addAll() method for API level 11 and above
+            // addAll() method for API level 11 and above is faster
             forecastAdapter.addAll(result);
             // New data is back from the server
+
+            // forecastAdapter.notifyDataSetChanged();
         }
     }
 
