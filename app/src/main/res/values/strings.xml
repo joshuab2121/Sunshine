@@ -6,14 +6,35 @@
     <string name="action_refresh" translatable="false">Refresh</string>
     <string name="title_activity_detail">Details</string>
 
-
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
 
-    <!-- Default postal code for location preferences [CHAR LIMIT=5] -->
+    <!-- Default postal code for location preference [CHAR LIMIT=5] -->
     <string name="pref_location_default" translatable="false">92694</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
     <string name="pref_location_label">Location</string>
+
+    <!-- Key name for storing unit in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_units_key" translatable="false">units</string>
+
+    <!-- Default type for unit preference [CHAR LIMIT=NONE] -->
+    <string name="pref_units_default" translatable="false">metric</string>
+
+    <!-- Label for the units preference [CHAR LIMIT=30] -->
+    <string name="pref_units_label">Pick Your Units</string>
+
+    <!-- Array containing the choices for temperature units -->
+    <string-array name="pref_units_list_items" translatable="false">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+    <!-- Array containing the values for the  -->
+    <string-array name="pref_units_list_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
 
 </resources>

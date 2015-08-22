@@ -63,15 +63,11 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         // Handle action bar item clicks here.  The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
-
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-
             updateWeather();
             return true;
         }
@@ -80,9 +76,7 @@ public class ForecastFragment extends Fragment {
 
     public void updateWeather() {
         String postalCode = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getString(getString(R.string.pref_location_key),
-                        getString(R.string.pref_location_default));
-
+                .getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
         Log.d("JDB", postalCode);
         FetchWeatherTask weatherTask = new FetchWeatherTask();
         weatherTask.execute(postalCode + ",us");
@@ -106,7 +100,7 @@ public class ForecastFragment extends Fragment {
                 getActivity(), // The current context (this activity)
                 R.layout.list_item_forecast, // The name of the layout ID.
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
-               new ArrayList<String>()); // Array or ArrayList of Strings to represent the ListView.
+                new ArrayList<String>()); // Array or ArrayList of Strings to represent the ListView.
 
         //Get a reference to the ListView and attach this adapter to it
         ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
@@ -185,7 +179,8 @@ public class ForecastFragment extends Fragment {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
-                while ((line = reader.readLine()) != null) {// Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                     // But it does make debugging a *lot* easier if you print out the completed
                     // buffer for debugging.
                     buffer.append(line).append("\n");
@@ -233,11 +228,11 @@ public class ForecastFragment extends Fragment {
             }
             */
 
-            // addAll() method for API level 11 and above is faster
+            // ... or addAll() method for API level 11 and above, which is faster
             forecastAdapter.addAll(result);
             // New data is back from the server
 
-            // forecastAdapter.notifyDataSetChanged();
+            // forecastAdapter.notifyDataSetChanged(); // Gets called automatically within the ArrayAdapter class
         }
     }
 
@@ -259,7 +254,6 @@ public class ForecastFragment extends Fragment {
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
-
         return roundedHigh + "/" + roundedLow;
     }
 
@@ -329,11 +323,23 @@ public class ForecastFragment extends Fragment {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
+            String unitsValue = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString(getString(R.string.pref_units_key), getString(R.string.pref_units_default));
+
+            if (unitsValue.equals("1")) {
+                high = convertToFahrenheit(high);
+                low = convertToFahrenheit(low);
+            }
+
             highAndLow = formatHighLows(high, low);
             resultStrings[i] = day + " - " + description + " - " + highAndLow;
         }
 
         return resultStrings;
+    }
+
+    private double convertToFahrenheit(double celsius) {
+        return celsius * 9 / 5 + 32;
     }
 }
 
