@@ -5,6 +5,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -25,6 +26,7 @@ public class SettingsActivity extends PreferenceActivity
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
+        bindPreferenceSummaryToValue((findPreference(getString(R.string.pref_units_key))));
     }
 
     /**
@@ -35,7 +37,6 @@ public class SettingsActivity extends PreferenceActivity
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
-
         // Trigger the listener immediately with the preference's
         // current value.
         onPreferenceChange(preference,
@@ -62,6 +63,4 @@ public class SettingsActivity extends PreferenceActivity
         }
         return true;
     }
-
-
 }
