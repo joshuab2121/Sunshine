@@ -4,9 +4,7 @@ package com.example.android.sunshine.app;
  * Class that handles network calls to Open Weather Map API in a background thread.
  */
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,8 +34,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -77,7 +73,6 @@ public class ForecastFragment extends Fragment {
     public void updateWeather() {
         String postalCode = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-        Log.d("JDB", postalCode);
         FetchWeatherTask weatherTask = new FetchWeatherTask();
         weatherTask.execute(postalCode + ",us");
     }
@@ -323,6 +318,12 @@ public class ForecastFragment extends Fragment {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
+            /* Data is fetched in Celsius by default.
+            *  If user prefers to see in Fahrenheit, convert the values here.
+            *  We do this rather than fetching in Fahrenheit so that the user can
+            *  change this option without us having to re-fetch the data once
+            *  we start storing the values in a database
+            */
             String unitsValue = PreferenceManager.getDefaultSharedPreferences(getActivity())
                     .getString(getString(R.string.pref_units_key), getString(R.string.pref_units_default));
 

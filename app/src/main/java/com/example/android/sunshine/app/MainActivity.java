@@ -1,7 +1,9 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,10 +37,28 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this,SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        if (id == R.id.action_map) {
+            openPreferredLocationInMap();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openPreferredLocationInMap() {
+        String location = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q", location)
+                .build();
+
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoLocation);
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 }

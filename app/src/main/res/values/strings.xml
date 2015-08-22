@@ -23,6 +23,9 @@
 
     <!-- Label for the units preference [CHAR LIMIT=30] -->
     <string name="pref_units_label">Pick Your Units</string>
+    <string name="prefs_view_location_label">View Location on Map</string>
+    <string name="prefs_view_location_key">view_location</string>
+    <string name="action_map">View on Map</string>
 
     <!-- Array containing the choices for temperature units -->
     <string-array name="pref_units_list_items" translatable="false">
