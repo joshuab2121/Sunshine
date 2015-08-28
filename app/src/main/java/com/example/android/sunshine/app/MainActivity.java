@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoLocation);
+        mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
         }

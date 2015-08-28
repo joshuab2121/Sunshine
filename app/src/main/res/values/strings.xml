@@ -2,8 +2,12 @@
 <resources>
 
     <string name="app_name">Sunshine</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="action_map">View on Map</string>
+    <string name="action_share">Share</string>
+
     <string name="title_activity_detail">Details</string>
 
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
@@ -23,9 +27,6 @@
 
     <!-- Label for the units preference [CHAR LIMIT=30] -->
     <string name="pref_units_label">Pick Your Units</string>
-    <string name="prefs_view_location_label">View Location on Map</string>
-    <string name="prefs_view_location_key">view_location</string>
-    <string name="action_map">View on Map</string>
 
     <!-- Array containing the choices for temperature units -->
     <string-array name="pref_units_list_items" translatable="false">
@@ -38,6 +39,9 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+
+    <string name="prefs_view_location_label">View Location on Map</string>
+    <string name="prefs_view_location_key">view_location</string>
 
 
 </resources>
